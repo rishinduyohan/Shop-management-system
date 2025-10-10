@@ -32,9 +32,9 @@ public class LoginFormController {
             new LoginInfoDTO("Rishindu",2005),
             new LoginInfoDTO("User",1111)
     );
-    public boolean checkPassword(String username,int password){
+    public boolean checkPassword(String username,String password){
         for(LoginInfoDTO user : loginInfoDTOS){
-            if(username.equals(user.getUsername()) && password==user.getPassword()){
+            if(username.equals(user.getUsername()) && Integer.parseInt(password)==user.getPassword()){
                 return true;
             }
         }
@@ -46,13 +46,13 @@ public class LoginFormController {
     }
     @FXML
     void btnLoginOnAction(ActionEvent event) {
-        boolean isUser = checkPassword(txtUsername.getText(),Integer.parseInt(txtPassword.getText()));
+        boolean isUser = checkPassword(txtUsername.getText(),txtPassword.getText());
         if(isUser){
             try {
                 stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/Dashboard.fxml"))));
                 Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 currentStage.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
             stage.setTitle("Dashboard");
