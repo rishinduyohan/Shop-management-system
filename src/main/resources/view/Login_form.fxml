@@ -46,7 +46,7 @@
 
             <VBox alignment="CENTER_LEFT" prefWidth="260" spacing="8">
                 <Label style="-fx-text-fill: #2e7d32; -fx-font-size: 13px;" text="Password" />
-                <PasswordField fx:id="txtPassword" promptText="Enter password" style="-fx-background-radius: 8; -fx-border-color: #a5d6a7; -fx-border-radius: 8; -fx-padding: 8;" />
+                <PasswordField fx:id="txtPassword" onAction="#txtPasswordOnAction" promptText="Enter password" style="-fx-background-radius: 8; -fx-border-color: #a5d6a7; -fx-border-radius: 8; -fx-padding: 8;" />
             </VBox>
 
             <CheckBox fx:id="chkRemember" style="-fx-text-fill: #555;" text="Remember me" />

@@ -67,4 +67,7 @@ public class LoginFormController {
         }
     }
 
+    public void txtPasswordOnAction(ActionEvent actionEvent) {
+        btnLoginOnAction(actionEvent);
+    }
 }
