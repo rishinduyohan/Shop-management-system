@@ -181,6 +181,18 @@ public class CustomerController implements Initializable {
         tblPsCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
 
         tblCustomer.setItems(customerDTOS);
-
+        tblCustomer.getSelectionModel().selectedItemProperty().addListener((observable,oldValue,newValue)->{
+            if (null!=newValue){
+                txtCusId.setText(newValue.getCusID());
+                txtTitle.setText(newValue.getTitle());
+                txtName.setText(newValue.getTitle());
+                txtDob.setText(newValue.getDob());
+                txtSalary.setText(String.valueOf(newValue.getSalary()));
+                txtAddress.setText(newValue.getAddress());
+                txtCity.setText(newValue.getCity());
+                txtProvince.setText(newValue.getProvince());
+                txtPostalCode.setText(newValue.getPostalCode());
+            }
+        });
     }
 }
