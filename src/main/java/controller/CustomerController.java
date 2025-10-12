@@ -96,6 +96,20 @@ public class CustomerController implements Initializable {
 
     @FXML
     void btnAddOnAction(ActionEvent event) {
+        String cusId = txtCusId.getText();
+        String title = txtTitle.getText();
+        String name = txtName.getText();
+        String dob = txtDob.getText();
+        String salary = txtSalary.getText();
+        String address = txtAddress.getText();
+        String city = txtCity.getText();
+        String province = txtProvince.getText();
+        String postalCode = txtPostalCode.getText();
+
+        CustomerDTO newCustomer = new CustomerDTO(cusId,title,name,dob,Double.parseDouble(salary),address,city,province,postalCode);
+        customerDTOS.add(newCustomer);
+        tblCustomer.refresh();
+        clearText();
 
     }
 
