@@ -101,7 +101,7 @@ public class CustomerController implements Initializable {
 
     @FXML
     void btnClearOnAction(ActionEvent event) {
-
+        clearText();
     }
 
     @FXML
@@ -185,7 +185,7 @@ public class CustomerController implements Initializable {
             if (null!=newValue){
                 txtCusId.setText(newValue.getCusID());
                 txtTitle.setText(newValue.getTitle());
-                txtName.setText(newValue.getTitle());
+                txtName.setText(newValue.getName());
                 txtDob.setText(newValue.getDob());
                 txtSalary.setText(String.valueOf(newValue.getSalary()));
                 txtAddress.setText(newValue.getAddress());
@@ -194,5 +194,16 @@ public class CustomerController implements Initializable {
                 txtPostalCode.setText(newValue.getPostalCode());
             }
         });
+    }
+    public void clearText(){
+        txtCusId.setText("");
+        txtTitle.setText("");
+        txtName.setText("");
+        txtDob.setText("");
+        txtSalary.setText("");
+        txtAddress.setText("");
+        txtCity.setText("");
+        txtProvince.setText("");
+        txtPostalCode.setText("");
     }
 }
