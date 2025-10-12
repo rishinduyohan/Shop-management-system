@@ -17,7 +17,15 @@ public class DashboardController {
 
     @FXML
     void btnCustomersOnAction(ActionEvent event) {
-
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/CustomerMgt.fxml"))));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setTitle("Customer Management");
+        stage.show();
     }
 
     @FXML
