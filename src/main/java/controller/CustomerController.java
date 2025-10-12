@@ -182,7 +182,18 @@ public class CustomerController implements Initializable {
 
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
-
+        CustomerDTO selectedCustomer = tblCustomer.getSelectionModel().getSelectedItem();
+        selectedCustomer.setCusID(txtCusId.getText());
+        selectedCustomer.setTitle(txtTitle.getText());
+        selectedCustomer.setName(txtName.getText());
+        selectedCustomer.setDob(txtDob.getText());
+        selectedCustomer.setSalary(Double.parseDouble(txtSalary.getText()));
+        selectedCustomer.setAddress(txtAddress.getText());
+        selectedCustomer.setCity(txtCity.getText());
+        selectedCustomer.setProvince(txtProvince.getText());
+        selectedCustomer.setPostalCode(txtPostalCode.getText());
+        tblCustomer.refresh();
+        clearText();
     }
 
     @Override
