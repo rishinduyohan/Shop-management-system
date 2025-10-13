@@ -2,14 +2,20 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class EmployeeController {
-
+    Stage stage = new Stage();
     @FXML
     private TableColumn<?, ?> colAddress;
 
@@ -41,7 +47,7 @@ public class EmployeeController {
     private TableColumn<?, ?> colTitle;
 
     @FXML
-    private ComboBox<?> comboStatus;
+    private ComboBox<String> comboStatus;
 
     @FXML
     private DatePicker dateDob;
@@ -85,12 +91,28 @@ public class EmployeeController {
 
     @FXML
     void btnCustomersOnAction(ActionEvent event) {
-
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/CustomerMgt.fxml"))));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setTitle("Customer Management");
+        stage.show();
     }
 
     @FXML
     void btnDashboardOnAction(ActionEvent event) {
-
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/Dashboard.fxml"))));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        stage.setTitle("Dashboard");
+        stage.show();
     }
 
     @FXML
@@ -105,17 +127,41 @@ public class EmployeeController {
 
     @FXML
     void btnItemsOnAction(ActionEvent event) {
-
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ItemMgt.fxml"))));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setTitle("Item Management");
+        stage.show();
     }
 
     @FXML
     void btnLogoutOnAction(ActionEvent event) {
-
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/Login_form.fxml"))));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setTitle("Login Form");
+        stage.show();
     }
 
     @FXML
     void btnSuppliersOnAction(ActionEvent event) {
-
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/SupplierMgt.fxml"))));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setTitle("Supplier Management");
+        stage.show();
     }
 
     @FXML
