@@ -159,7 +159,15 @@ public class CustomerController implements Initializable {
 
     @FXML
     void btnItemsOnAction(ActionEvent event) {
-
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ItemMgt.fxml"))));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setTitle("Item Management");
+        stage.show();
     }
 
     @FXML
