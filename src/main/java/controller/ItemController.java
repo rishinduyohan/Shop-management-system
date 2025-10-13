@@ -72,12 +72,20 @@ public class ItemController implements Initializable {
 
     @FXML
     void btnAddOnAction(ActionEvent event) {
-
+        String code = txtItemCode.getText();
+        String desc = txtDescription.getText();
+        String category = comboCategory.getValue();
+        int qty = Integer.parseInt(txtQty.getText());
+        double unitPrice = Double.parseDouble(txtUnitPrice.getText());
+        ItemDTO newItem = new ItemDTO(code,desc,category,qty,unitPrice);
+        itemDTOS.add(newItem);
+        tblItems.refresh();
+        clearText();
     }
 
     @FXML
     void btnClearOnAction(ActionEvent event) {
-
+        clearText();
     }
 
     @FXML
@@ -92,7 +100,13 @@ public class ItemController implements Initializable {
         stage.setTitle("Customer Management");
         stage.show();
     }
-
+    public void clearText(){
+        txtItemCode.setText("");
+        txtDescription.setText("");
+        txtQty.setText("");
+        txtUnitPrice.setText("");
+        comboCategory.setValue("Category");
+    }
     @FXML
     void btnDashboardOnAction(ActionEvent event) {
         try {
@@ -108,7 +122,10 @@ public class ItemController implements Initializable {
 
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
-
+        ItemDTO selected = tblItems.getSelectionModel().getSelectedItem();
+        itemDTOS.remove(selected);
+        tblItems.refresh();
+        clearText();
     }
 
     @FXML
@@ -149,7 +166,14 @@ public class ItemController implements Initializable {
 
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
-
+        ItemDTO selected = tblItems.getSelectionModel().getSelectedItem();
+        selected.setItemCode(txtItemCode.getText());
+        selected.setDescription(txtDescription.getText());
+        selected.setCategory(comboCategory.getValue());
+        selected.setQty(Integer.parseInt(txtQty.getText()));
+        selected.setUnitPrice(Double.parseDouble(txtUnitPrice.getText()));
+        tblItems.refresh();
+        clearText();
     }
 
     @Override
