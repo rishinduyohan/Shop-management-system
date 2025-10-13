@@ -1,21 +1,27 @@
 package controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import model.ItemDTO;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class ItemController {
+public class ItemController implements Initializable {
     Stage stage = new Stage();
     @FXML
     private TableColumn<?, ?> colCategory;
@@ -33,7 +39,7 @@ public class ItemController {
     private TableColumn<?, ?> colUnitPrice;
 
     @FXML
-    private ComboBox<?> comboCategory;
+    private ComboBox<String> comboCategory;
 
     @FXML
     private AnchorPane mainContent;
@@ -52,6 +58,17 @@ public class ItemController {
 
     @FXML
     private TextField txtUnitPrice;
+
+    ObservableList<ItemDTO> itemDTOS = FXCollections.observableArrayList(
+            new ItemDTO("I001", "LED Bulb 12W", "Electronics", 150, 450.00),
+            new ItemDTO("I002", "A4 Paper Pack", "Office Supplies", 80, 1200.00),
+            new ItemDTO("I003", "Steel Hammer", "Hardware Tools", 40, 950.00),
+            new ItemDTO("I004", "Basmathi Rice 5kg", "Groceries", 60, 2500.00),
+            new ItemDTO("I005", "Men’s Cotton Shirt", "Clothing", 30, 3500.00),
+            new ItemDTO("I006", "Extension Cord 5m", "Electronics", 100, 1100.00),
+            new ItemDTO("I007", "Paint Brush Set", "Hardware Tools", 75, 650.00),
+            new ItemDTO("I008", "Printer Ink Cartridge", "Office Supplies", 45, 3200.00)
+    );
 
     @FXML
     void btnAddOnAction(ActionEvent event) {
@@ -135,4 +152,24 @@ public class ItemController {
 
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        colItemCode.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
+        colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
+        colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+        tblItems.setItems(itemDTOS);
+
+        tblItems.getSelectionModel().selectedItemProperty().addListener((observable,oldValue,newValue)->{
+            if (null!=newValue){
+                txtItemCode.setText(newValue.getItemCode());
+                txtDescription.setText(newValue.getDescription());
+                comboCategory.setValue(newValue.getCategory());
+                txtQty.setText(String.valueOf(newValue.getQty()));
+                txtUnitPrice.setText(String.valueOf(newValue.getUnitPrice()));
+            }
+        });
+
+    }
 }
