@@ -26,7 +26,7 @@
             </ImageView>
             <Label style="-fx-font-size: 20px; -fx-font-weight: bold;-fx-text-fill: white;" text="Thogakade Shop Management System" />
             <Pane HBox.hgrow="ALWAYS" />
-            <Button onAction="#btnLogoutOnAction" style="-fx-background-color: white;                            -fx-text-fill: #2e7d32;                            -fx-background-radius: 10;                            -fx-font-size: 13px;                            -fx-cursor: hand;" text="Logout" />
+            <Button onAction="#btnLogoutOnAction" style="-fx-background-color: white;-fx-text-fill: #2e7d32;-fx-background-radius: 10; -fx-font-size: 13px;-fx-cursor: hand;" text="Logout" />
         </HBox>
     </top>
 
@@ -92,7 +92,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Button>
-            <TableView fx:id="tblCustomer" layoutX="33.0" layoutY="241.0" prefHeight="264.0" prefWidth="714.0">
+            <TableView fx:id="tblSuppliers" layoutX="33.0" layoutY="241.0" prefHeight="264.0" prefWidth="714.0">
               <columns>
                 <TableColumn fx:id="colSupId" prefWidth="57.60003662109375" text="Sup ID" />
                 <TableColumn fx:id="colName" prefWidth="58.4000244140625" text="Name" />
