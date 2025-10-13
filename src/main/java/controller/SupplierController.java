@@ -92,14 +92,37 @@ public class SupplierController implements Initializable {
             new SupplierDTO("S007", "Priya Abeykoon", "Priya Textiles", "77 Bazaar St", "Kurunegala", "North Western", "60000", "0726789012", "priya@ptextiles.lk"),
             new SupplierDTO("S008", "Manjula Rathnayake", "MR Electronics", "55 Lake View", "Anuradhapura", "North Central", "50000", "0797890123", "manjula@mrelec.lk")
     );
+    public void clearText(){
+        txtSupId.setText("");
+        txtName.setText("");
+        txtComName.setText("");
+        txtAddress.setText("");
+        txtCity.setText("");
+        txtProvince.setText("");
+        txtPsCode.setText("");
+        txtPhone.setText("");
+        txtEmail.setText("");
+    }
     @FXML
     void btnAddOnAction(ActionEvent event) {
-
+        String id = txtSupId.getText();
+        String name = txtName.getText();
+        String comName = txtComName.getText();
+        String address = txtAddress.getText();
+        String city = txtCity.getText();
+        String province = txtProvince.getText();
+        String psCode = txtPsCode.getText();
+        String phone = txtPhone.getText();
+        String email = txtEmail.getText();
+        SupplierDTO newSupplier = new SupplierDTO(id,name,comName,address,city,province,psCode,phone,email);
+        supplierDTOS.add(newSupplier);
+        tblSuppliers.refresh();
+        clearText();
     }
 
     @FXML
     void btnClearOnAction(ActionEvent event) {
-
+        clearText();
     }
 
     @FXML
@@ -130,7 +153,10 @@ public class SupplierController implements Initializable {
 
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
-
+        SupplierDTO selected = tblSuppliers.getSelectionModel().getSelectedItem();
+        supplierDTOS.remove(selected);
+        tblSuppliers.refresh();
+        clearText();
     }
 
     @FXML
@@ -163,7 +189,18 @@ public class SupplierController implements Initializable {
 
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
-
+        SupplierDTO selected = tblSuppliers.getSelectionModel().getSelectedItem();
+        selected.setSupplierId(txtSupId.getText());
+        selected.setName(txtName.getText());
+        selected.setCompanyName(txtComName.getText());
+        selected.setAddress(txtAddress.getText());
+        selected.setCity(txtCity.getText());
+        selected.setProvince(txtProvince.getText());
+        selected.setPostalCode(txtPsCode.getText());
+        selected.setPhone(txtPhone.getText());
+        selected.setEmail(txtEmail.getText());
+        tblSuppliers.refresh();
+        clearText();
     }
 
     @Override
