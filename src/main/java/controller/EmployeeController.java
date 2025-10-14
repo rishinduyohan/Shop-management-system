@@ -148,7 +148,10 @@ public class EmployeeController implements Initializable {
 
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
-
+        EmployeeDTO selected = tblEmployee.getSelectionModel().getSelectedItem();
+        employeeDTOS.remove(selected);
+        tblEmployee.refresh();
+        clearText();
     }
 
     @FXML
