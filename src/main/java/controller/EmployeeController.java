@@ -104,7 +104,7 @@ public class EmployeeController implements Initializable {
 
     @FXML
     void btnClearOnAction(ActionEvent event) {
-
+        clearText();
     }
 
     @FXML
@@ -187,6 +187,18 @@ public class EmployeeController implements Initializable {
 
     }
 
+    public void clearText(){
+        txtEmpId.setText("");
+        txtName.setText("");
+        txtNic.setText("");
+        dateDob.setValue(null);
+        txtPosition.setText("");
+        txtSalary.setText("");
+        txtContact.setText("");
+        txtAddress.setText("");
+        dateJoined.setValue(null);
+        comboStatus.setValue("");
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         colEmpId.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
@@ -206,6 +218,13 @@ public class EmployeeController implements Initializable {
                 txtEmpId.setText(newValue.getEmployeeId());
                 txtName.setText(newValue.getName());
                 txtNic.setText(newValue.getNic());
+                dateDob.setValue(LocalDate.parse(newValue.getDob()));
+                txtPosition.setText(newValue.getPosition());
+                txtSalary.setText(String.valueOf(newValue.getSalary()));
+                txtContact.setText(newValue.getContactNumber());
+                txtAddress.setText(newValue.getAddress());
+                dateJoined.setValue(LocalDate.parse(newValue.getJoinedDate()));
+                comboStatus.setValue(newValue.getStatus());
             }
         });
     }
