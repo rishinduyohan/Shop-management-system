@@ -99,7 +99,20 @@ public class EmployeeController implements Initializable {
     );
     @FXML
     void btnAddOnAction(ActionEvent event) {
-
+         String employeeId = txtEmpId.getText();
+         String name = txtName.getText();
+         String nic = txtNic.getText();
+         String dob = String.valueOf(dateDob.getValue());
+         String position = txtPosition.getText();
+         double salary = Double.parseDouble(txtSalary.getText());
+         String contactNumber = txtContact.getText();
+         String address = txtAddress.getText();
+         String joinedDate = String.valueOf(dateJoined.getValue());
+         String status = txtSalary.getText();
+         EmployeeDTO newEmployee = new EmployeeDTO(employeeId,name,nic,dob,position,salary,contactNumber,address,joinedDate,status);
+         employeeDTOS.add(newEmployee);
+         tblEmployee.refresh();
+         clearText();
     }
 
     @FXML
