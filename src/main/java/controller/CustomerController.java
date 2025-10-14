@@ -154,12 +154,28 @@ public class CustomerController implements Initializable {
 
     @FXML
     void btnEmployeesOnAction(ActionEvent event) {
-
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/EmployeeMgt.fxml"))));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setTitle("Employee Management");
+        stage.show();
     }
 
     @FXML
     void btnItemsOnAction(ActionEvent event) {
-
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ItemMgt.fxml"))));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setTitle("Item Management");
+        stage.show();
     }
 
     @FXML
@@ -177,7 +193,15 @@ public class CustomerController implements Initializable {
 
     @FXML
     void btnSuppliersOnAction(ActionEvent event) {
-
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/SupplierMgt.fxml"))));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.setTitle("Supplier Management");
+        stage.show();
     }
 
     @FXML
