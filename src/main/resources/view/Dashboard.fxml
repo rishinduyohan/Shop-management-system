@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
@@ -15,6 +11,8 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: linear-gradient(to bottom right, #f1f8e9, #ffffff);" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardController">
 
@@ -67,7 +65,7 @@
                 <Label layoutX="240.0" layoutY="10.0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1b5e20;" text="Welcome to Thogakade Dashboard!" />
 
                 <!-- STAT CARDS -->
-                <HBox alignment="CENTER" layoutX="40" layoutY="60" spacing="25">
+                <HBox alignment="CENTER" layoutX="40.0" layoutY="87.0" spacing="25">
                     <VBox alignment="CENTER" prefHeight="100" prefWidth="140" style="-fx-background-color: #e8f5e9; -fx-background-radius: 12;                                  -fx-padding: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 2);">
                         <Label style="-fx-font-size: 13px; -fx-text-fill: #1b5e20;" text="Customers" />
                         <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="120+" />
@@ -90,27 +88,32 @@
                 </HBox>
 
                 <!-- CHART SECTION -->
-                <HBox alignment="CENTER" layoutX="40" layoutY="200" spacing="30">
+                <HBox alignment="CENTER" layoutX="40.0" layoutY="227.0" spacing="30">
 
                     <!-- Bar Chart -->
                     <VBox>
                         <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;" text="Monthly Sales Overview" />
-                        <BarChart prefHeight="220" prefWidth="300">
-                            <xAxis>
-                                <CategoryAxis label="Month" />
-                            </xAxis>
-                            <yAxis>
-                                <NumberAxis label="Sales (Rs.)" />
-                            </yAxis>
-                        </BarChart>
+                  <ImageView fitHeight="194.0" fitWidth="343.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/img%20bar.png" />
+                     </image>
+                  </ImageView>
                     </VBox>
 
                     <!-- Pie Chart -->
                     <VBox>
                         <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;" text="Product Category Breakdown" />
-                        <PieChart prefHeight="220" prefWidth="300" />
+                  <ImageView fitHeight="225.0" fitWidth="337.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/ChatGPT%20Image%20Oct%2015,%202025,%2010_22_53%20PM.png" />
+                     </image>
+                  </ImageView>
                     </VBox>
                 </HBox>
+            <Text fill="#1b5e20" layoutX="221.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Smart insights, simple management , everything your shop needs, right here." wrappingWidth="422.93658447265625" />
+            <Text fill="#2e7d32" layoutX="43.0" layoutY="472.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The Thogakade Dashboard serves as the central control hub of the system, providing a clear and interactive view of business performance. It combines essential analytics, real-time summaries, and quick navigation options for smooth management operations." wrappingWidth="702.9367065429688" />
+            <Line endX="611.2000122070312" layoutX="139.0" layoutY="210.0" startX="-100.0" stroke="#1b5e20" />
+            <Line endX="611.2000122070312" layoutX="145.0" layoutY="441.0" startX="-100.0" stroke="#1b5e20" />
 
             </children>
         </AnchorPane>
