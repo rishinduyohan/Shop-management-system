@@ -15,17 +15,17 @@
       <div class="mb-4">
         <h2>✨ Key Features</h2>
         <ul>
-          <li>👥 <strong>Customer Management</strong> — Add, edit, and search customer profiles effortlessly.</li>
-          <li>📦 <strong>Item Management</strong> — Maintain inventory, update stock levels, and set pricing.</li>
-          <li>🚚 <strong>Supplier Management</strong> — Track supplier details and order histories.</li>
-          <li>👨‍💼 <strong>Employee Management</strong> — Manage staff information and roles securely.</li>
-          <li>📊 <strong>Dashboard</strong> — Interactive analytics for monthly sales and product breakdowns.</li>
+          <li>👥 <strong>Customer Management</strong> - Add, edit, and search customer profiles effortlessly.</li>
+          <li>📦 <strong>Item Management</strong> - Maintain inventory, update stock levels, and set pricing.</li>
+          <li>🚚 <strong>Supplier Management</strong> - Track supplier details and order histories.</li>
+          <li>👨‍💼 <strong>Employee Management</strong> - Manage staff information and roles securely.</li>
+          <li>📊 <strong>Dashboard</strong> - Interactive analytics for monthly sales and product breakdowns.</li>
         </ul>
       </div>
       <div class="mb-4">
         <h2>🚀 Getting Started</h2>
         <ol>
-          <li>Clone the repository:<br><code>git clone https://github.com/yourusername/thogakade.git</code></li>
+          <li>Clone the repository:<br><code>git clone https://github.com/rishinduyohan/thogakade.git</code></li>
           <li>Open the project in your preferred Java IDE (IntelliJ IDEA, NetBeans, or VS Code).</li>
           <li>Ensure JavaFX runtime is configured (Java 11+ recommended).</li>
           <li>Set up your database (SQLite by default or MySQL if preferred).</li>
