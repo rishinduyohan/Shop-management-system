@@ -1,5 +1,6 @@
 package controller;
 
+import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
@@ -19,6 +20,7 @@ import model.CustomerDTO;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.*;
 import java.util.ResourceBundle;
 
 public class CustomerController implements Initializable {
@@ -83,16 +85,7 @@ public class CustomerController implements Initializable {
     @FXML
     private TextField txtTitle;
 
-    ObservableList<CustomerDTO> customerDTOS = FXCollections.observableArrayList(
-            new CustomerDTO("C001", "Mr.", "John Smith", "1985-06-15", 55000.00, "123 Maple St", "Toronto", "Ontario", "M5A1A1"),
-            new CustomerDTO("C002", "Ms.", "Emily Davis", "1990-03-22", 62000.00, "456 Oak Ave", "Vancouver", "British Columbia", "V6B2B2"),
-            new CustomerDTO("C003", "Mrs.", "Ayesha Perera", "1988-11-05", 48000.00, "789 Palm Rd", "Colombo", "Western Province", "Y00500"),
-            new CustomerDTO("C004", "Dr.", "Liam Chen", "1979-01-30", 98000.00, "321 Birch Blvd", "Calgary", "Alberta", "T2P3P3"),
-            new CustomerDTO("C005", "Mr.", "Carlos Ruiz", "1992-07-18", 53000.00, "654 Cedar Ln", "Montreal", "Quebec", "H3Z2Y7"),
-            new CustomerDTO("C006", "Ms.", "Nandini Rao", "1987-09-12", 61000.00, "987 Spruce Ct", "Bangalore", "Karnataka", "V560001"),
-            new CustomerDTO("C007", "Mr.", "David Kim", "1995-12-03", 47000.00, "159 Elm St", "Seattle", "Washington", "L98101"),
-            new CustomerDTO("C008", "Mrs.", "Fatima Ali", "1983-04-27", 75000.00, "753 Willow Way", "Dubai", "Dubai Emirate", "C56156")
-    );
+    ObservableList<CustomerDTO> customerDTOS = FXCollections.observableArrayList();
 
     @FXML
     void btnAddOnAction(ActionEvent event) {
@@ -106,7 +99,7 @@ public class CustomerController implements Initializable {
         String province = txtProvince.getText();
         String postalCode = txtPostalCode.getText();
 
-        CustomerDTO newCustomer = new CustomerDTO(cusId,title,name,dob,Double.parseDouble(salary),address,city,province,postalCode);
+        CustomerDTO newCustomer = new CustomerDTO(cusId, title, name, dob, Double.parseDouble(salary), address, city, province, postalCode);
         customerDTOS.add(newCustomer);
         tblCustomer.refresh();
         clearText();
@@ -231,10 +224,10 @@ public class CustomerController implements Initializable {
         tblCity.setCellValueFactory(new PropertyValueFactory<>("city"));
         tblProvince.setCellValueFactory(new PropertyValueFactory<>("province"));
         tblPsCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
-
+        loadTable();
         tblCustomer.setItems(customerDTOS);
-        tblCustomer.getSelectionModel().selectedItemProperty().addListener((observable,oldValue,newValue)->{
-            if (null!=newValue){
+        tblCustomer.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (null != newValue) {
                 txtCusId.setText(newValue.getCusID());
                 txtTitle.setText(newValue.getTitle());
                 txtName.setText(newValue.getName());
@@ -247,7 +240,32 @@ public class CustomerController implements Initializable {
             }
         });
     }
-    public void clearText(){
+
+    private void loadTable() {
+        try {
+            Statement statement = DBConnection.getInstance().getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT *FROM CUSTOMER");
+            while (resultSet.next()) {
+                customerDTOS.add(new CustomerDTO(
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getDouble(5),
+                        resultSet.getString(6),
+                        resultSet.getString(7),
+                        resultSet.getString(8),
+                        resultSet.getString(9)
+
+                        ));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void clearText() {
         txtCusId.setText("");
         txtTitle.setText("");
         txtName.setText("");

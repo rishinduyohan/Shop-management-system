@@ -1,4 +1,4 @@
-Create database thogakadefx;
+Create db thogakadefx;
 
 use thogakadefx;
 
