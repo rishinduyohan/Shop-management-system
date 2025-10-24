@@ -1,0 +1,101 @@
+Create database thogakadefx;
+
+use thogakadefx;
+
+CREATE TABLE customer (
+    cusID VARCHAR(20) PRIMARY KEY,
+    title VARCHAR(10),
+    name VARCHAR(100),
+    dob DATE,
+    salary DOUBLE,
+    address VARCHAR(255),
+    city VARCHAR(100),
+    province VARCHAR(100),
+    postalCode VARCHAR(20)
+);
+
+INSERT INTO customer VALUES ('C001', 'Mr.', 'John Smith', '1985-06-15', 55000.00, '123 Maple St', 'Springfield', 'Illinois', '62704');
+INSERT INTO customer VALUES ('C002', 'Ms.', 'Emily Davis', '1990-09-22', 62000.00, '456 Oak Ave', 'Madison', 'Wisconsin', '53703');
+INSERT INTO customer VALUES ('C003', 'Mrs.', 'Linda Johnson', '1978-12-05', 72000.00, '789 Pine Rd', 'Denver', 'Colorado', '80203');
+INSERT INTO customer VALUES ('C004', 'Dr.', 'Michael Brown', '1982-03-18', 88000.00, '321 Birch Blvd', 'Austin', 'Texas', '73301');
+INSERT INTO customer VALUES ('C005', 'Mr.', 'David Wilson', '1995-07-30', 47000.00, '654 Cedar Ln', 'Seattle', 'Washington', '98101');
+INSERT INTO customer VALUES ('C006', 'Ms.', 'Sophia Martinez', '1988-11-12', 53000.00, '987 Elm St', 'Miami', 'Florida', '33101');
+INSERT INTO customer VALUES ('C007', 'Mrs.', 'Patricia Taylor', '1975-04-25', 61000.00, '159 Walnut Dr', 'Boston', 'Massachusetts', '02108');
+INSERT INTO customer VALUES ('C008', 'Mr.', 'James Anderson', '1983-08-09', 69000.00, '753 Chestnut Ct', 'Phoenix', 'Arizona', '85001');
+INSERT INTO customer VALUES ('C009', 'Dr.', 'Barbara Thomas', '1992-01-14', 77000.00, '852 Spruce Way', 'Atlanta', 'Georgia', '30301');
+INSERT INTO customer VALUES ('C010', 'Ms.', 'Olivia Jackson', '1987-05-27', 58000.00, '951 Willow Pl', 'Chicago', 'Illinois', '60601');
+
+Select * from customer;
+
+CREATE TABLE employee (
+    employeeId VARCHAR(20) PRIMARY KEY,
+    name VARCHAR(100),
+    nic VARCHAR(20),
+    dob DATE,
+    position VARCHAR(50),
+    salary DOUBLE,
+    contactNumber VARCHAR(20),
+    address VARCHAR(255),
+    joinedDate DATE,
+    status VARCHAR(20)
+);
+
+INSERT INTO employee VALUES ('E001', 'Ayesha Perera', '901234567V', '1990-04-12', 'Manager', 85000.00, '0771234567', '45 Flower Rd, Colombo', '2015-06-01', 'Active');
+INSERT INTO employee VALUES ('E002', 'Nimal Fernando', '880123456V', '1988-11-23', 'Accountant', 72000.00, '0712345678', '12 Lake View, Kandy', '2016-03-15', 'Active');
+INSERT INTO employee VALUES ('E003', 'Kavindu Silva', '920987654V', '1992-07-08', 'Sales Executive', 55000.00, '0759876543', '88 Beach Rd, Galle', '2018-09-10', 'Active');
+INSERT INTO employee VALUES ('E004', 'Tharushi Jayasinghe', '930456789V', '1993-02-17', 'HR Officer', 60000.00, '0764567890', '33 Temple Rd, Anuradhapura', '2019-01-05', 'Active');
+INSERT INTO employee VALUES ('E005', 'Ruwan Dissanayake', '870345678V', '1987-05-30', 'Technician', 48000.00, '0783456789', '21 River Side, Matara', '2014-07-20', 'Active');
+INSERT INTO employee VALUES ('E006', 'Dilani Wickramasinghe', '940234567V', '1994-09-14', 'Receptionist', 42000.00, '0702345678', '56 Hill St, Nuwara Eliya', '2020-02-01', 'Active');
+INSERT INTO employee VALUES ('E007', 'Chamath Karunaratne', '850123456V', '1985-12-05', 'Security Officer', 40000.00, '0721234567', '77 Main St, Kurunegala', '2013-11-25', 'Active');
+INSERT INTO employee VALUES ('E008', 'Ishara Gunawardena', '950987654V', '1995-06-19', 'Marketing Coordinator', 58000.00, '0749876543', '19 Garden Rd, Negombo', '2021-05-10', 'Active');
+INSERT INTO employee VALUES ('E009', 'Sahan Rajapaksha', '860456789V', '1986-03-03', 'Driver', 39000.00, '0734567890', '101 Canal Rd, Badulla', '2012-08-18', 'Active');
+INSERT INTO employee VALUES ('E010', 'Nadeesha Hettiarachchi', '930345678V', '1993-10-27', 'IT Support', 65000.00, '0793456789', '66 Park Ave, Jaffna', '2017-04-12', 'Active');
+
+Select * from employee;
+
+CREATE TABLE item (
+    itemCode VARCHAR(20) PRIMARY KEY,
+    description VARCHAR(255),
+    category VARCHAR(100),
+    qty INT,
+    unitPrice DOUBLE
+);
+
+INSERT INTO item VALUES ('I001', 'Ballpoint Pen', 'Stationery', 500, 25.00);
+INSERT INTO item VALUES ('I002', 'A4 Notebook', 'Stationery', 300, 120.00);
+INSERT INTO item VALUES ('I003', 'USB Flash Drive 32GB', 'Electronics', 150, 950.00);
+INSERT INTO item VALUES ('I004', 'Wireless Mouse', 'Electronics', 100, 1450.00);
+INSERT INTO item VALUES ('I005', 'Office Chair', 'Furniture', 40, 18500.00);
+INSERT INTO item VALUES ('I006', 'LED Desk Lamp', 'Furniture', 75, 3200.00);
+INSERT INTO item VALUES ('I007', 'Whiteboard Marker', 'Stationery', 600, 60.00);
+INSERT INTO item VALUES ('I008', 'Laptop Backpack', 'Accessories', 80, 4200.00);
+INSERT INTO item VALUES ('I009', 'Bluetooth Speaker', 'Electronics', 50, 6700.00);
+INSERT INTO item VALUES ('I010', 'Stapler', 'Stationery', 200, 350.00);
+
+Select * from item;
+
+CREATE TABLE supplier (
+    supplierId VARCHAR(20) PRIMARY KEY,
+    name VARCHAR(100),
+    companyName VARCHAR(100),
+    address VARCHAR(255),
+    city VARCHAR(100),
+    province VARCHAR(100),
+    postalCode VARCHAR(20),
+    phone VARCHAR(20),
+    email VARCHAR(100)
+);
+
+INSERT INTO supplier VALUES ('S001', 'Ravi Kumara', 'Tech Supplies Ltd.', '123 Main St', 'Colombo', 'Western', '00100', '0771234567', 'ravi@techsupplies.lk');
+INSERT INTO supplier VALUES ('S002', 'Nadeesha Silva', 'Office Essentials Co.', '45 Lake Rd', 'Kandy', 'Central', '20000', '0712345678', 'nadeesha@officeessentials.lk');
+INSERT INTO supplier VALUES ('S003', 'Kasun Perera', 'Smart Electronics', '88 Temple St', 'Galle', 'Southern', '80000', '0759876543', 'kasun@smartelectronics.lk');
+INSERT INTO supplier VALUES ('S004', 'Tharindu Jayasinghe', 'Furniture World', '321 Hill Rd', 'Matara', 'Southern', '81000', '0764567890', 'tharindu@furnitureworld.lk');
+INSERT INTO supplier VALUES ('S005', 'Dilani Wickrama', 'Stationery Hub', '654 River Ln', 'Negombo', 'Western', '11500', '0783456789', 'dilani@stationeryhub.lk');
+INSERT INTO supplier VALUES ('S006', 'Chamath Karunaratne', 'Gadget Galaxy', '987 Garden St', 'Jaffna', 'Northern', '40000', '0702345678', 'chamath@gadgetgalaxy.lk');
+INSERT INTO supplier VALUES ('S007', 'Ishara Gunawardena', 'Print Masters', '159 Canal Rd', 'Kurunegala', 'North Western', '60000', '0721234567', 'ishara@printmasters.lk');
+INSERT INTO supplier VALUES ('S008', 'Sahan Rajapaksha', 'Bright Lights Ltd.', '753 Park Ave', 'Badulla', 'Uva', '32000', '0749876543', 'sahan@brightlights.lk');
+INSERT INTO supplier VALUES ('S009', 'Nadeesha Hettiarachchi', 'Eco Paper Co.', '852 Forest Way', 'Nuwara Eliya', 'Central', '22200', '0734567890', 'nadeesha@ecopaper.lk');
+INSERT INTO supplier VALUES ('S010', 'Ayesha Perera', 'Digital Dreams', '951 Sunset Pl', 'Trincomalee', 'Eastern', '31000', '0793456789', 'ayesha@digitaldreams.lk');
+
+Select * from supplier;
+
