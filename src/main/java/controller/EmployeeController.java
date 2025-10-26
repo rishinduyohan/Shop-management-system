@@ -1,5 +1,6 @@
 package controller;
 
+import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,17 +9,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.EmployeeDTO;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
@@ -87,32 +85,59 @@ public class EmployeeController implements Initializable {
     @FXML
     private TextField txtSalary;
 
-    ObservableList<EmployeeDTO> employeeDTOS = FXCollections.observableArrayList(
-            new EmployeeDTO("E001", "Ravi Perera", "901234567V", "1990-05-12", "Manager", 85000.00, "0771234567", "Colombo", "2015-03-01", "Active"),
-            new EmployeeDTO("E002", "Nimali Silva", "911234568V", "1991-08-22", "Software Engineer", 95000.00, "0772345678", "Kandy", "2018-07-15", "Active"),
-            new EmployeeDTO("E003", "Tharindu Jayasena", "921234569V", "1992-11-05", "HR Executive", 65000.00, "0773456789", "Galle", "2016-01-20", "Inactive"),
-            new EmployeeDTO("E004", "Ishara Fernando", "931234570V", "1993-02-18", "Accountant", 72000.00, "0774567890", "Matara", "2019-09-10", "Active"),
-            new EmployeeDTO("E005", "Kasun Rathnayake", "941234571V", "1994-06-30", "Graphic Designer", 68000.00, "0775678901", "Kurunegala", "2020-05-25", "Active"),
-            new EmployeeDTO("E006", "Dilani Wickramasinghe", "951234572V", "1995-12-12", "Marketing Lead", 80000.00, "0776789012", "Negombo", "2017-11-03", "Inactive"),
-            new EmployeeDTO("E007", "Chamika Bandara", "961234573V", "1996-03-27", "QA Analyst", 70000.00, "0777890123", "Anuradhapura", "2021-02-14", "Active"),
-            new EmployeeDTO("E008", "Sanduni Herath", "971234574V", "1997-09-09", "Intern", 40000.00, "0778901234", "Badulla", "2023-06-01", "Active")
-    );
+    ObservableList<EmployeeDTO> employeeDTOS = FXCollections.observableArrayList();
+
+    private EmployeeDTO getCurrentEmployee() {
+        String employeeId = txtEmpId.getText();
+        String name = txtName.getText();
+        String nic = txtNic.getText();
+        String dob = String.valueOf(dateDob.getValue());
+        String position = txtPosition.getText();
+        double salary = Double.parseDouble(txtSalary.getText());
+        String contactNumber = txtContact.getText();
+        String address = txtAddress.getText();
+        String joinedDate = String.valueOf(dateJoined.getValue());
+        String status = comboStatus.getValue();
+
+        return new EmployeeDTO(employeeId, name, nic, dob, position, salary, contactNumber, address, joinedDate, status);
+    }
+
     @FXML
     void btnAddOnAction(ActionEvent event) {
-         String employeeId = txtEmpId.getText();
-         String name = txtName.getText();
-         String nic = txtNic.getText();
-         String dob = String.valueOf(dateDob.getValue());
-         String position = txtPosition.getText();
-         double salary = Double.parseDouble(txtSalary.getText());
-         String contactNumber = txtContact.getText();
-         String address = txtAddress.getText();
-         String joinedDate = String.valueOf(dateJoined.getValue());
-         String status = txtSalary.getText();
-         EmployeeDTO newEmployee = new EmployeeDTO(employeeId,name,nic,dob,position,salary,contactNumber,address,joinedDate,status);
-         employeeDTOS.add(newEmployee);
-         tblEmployee.refresh();
-         clearText();
+        if (isAdded(getCurrentEmployee())) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Successs!");
+            alert.setHeaderText("Employee Added!");
+            alert.setContentText("Employee Successfully added to the system!");
+            alert.showAndWait();
+        }
+        tblEmployee.refresh();
+        loadTable();
+        clearText();
+    }
+
+    private boolean isAdded(EmployeeDTO emp) {
+        try {
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("INSERT INTO EMPLOYEE VALUES(?,?,?,?,?,?,?,?,?,?)");
+            statement.setObject(1, emp.getEmployeeId());
+            statement.setObject(2, emp.getName());
+            statement.setObject(3, emp.getNic());
+            statement.setObject(4, Date.valueOf(emp.getDob()));
+            statement.setObject(5, emp.getPosition());
+            statement.setObject(6, emp.getSalary());
+            statement.setObject(7, emp.getContactNumber());
+            statement.setObject(8, emp.getAddress());
+            statement.setObject(9, Date.valueOf(emp.getJoinedDate()));
+            statement.setObject(10, emp.getStatus());
+            return statement.executeUpdate() > 0;
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Employee NOT Added!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        return false;
     }
 
     @FXML
@@ -149,9 +174,30 @@ public class EmployeeController implements Initializable {
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
         EmployeeDTO selected = tblEmployee.getSelectionModel().getSelectedItem();
-        employeeDTOS.remove(selected);
+        if (isDeleted(selected.getEmployeeId())) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Success!");
+            alert.setHeaderText("Employee Deleted!");
+            alert.setContentText("Employee successfully deleted from the system");
+            alert.showAndWait();
+        }
         tblEmployee.refresh();
+        loadTable();
         clearText();
+    }
+
+    private boolean isDeleted(String id) {
+        try {
+            PreparedStatement stm = DBConnection.getInstance().getConnection().prepareStatement("DELETE FROM EMPLOYEE WHERE employeeId='" + id + "'");
+            return stm.executeUpdate() > 0;
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Employee NOT Deleted!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        return false;
     }
 
     @FXML
@@ -201,21 +247,45 @@ public class EmployeeController implements Initializable {
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
         EmployeeDTO selected = tblEmployee.getSelectionModel().getSelectedItem();
-        selected.setEmployeeId(txtEmpId.getText());
-        selected.setName(txtName.getText());
-        selected.setNic(txtNic.getText());
-        selected.setDob(String.valueOf(dateDob.getValue()));
-        selected.setPosition(txtPosition.getText());
-        selected.setSalary(Double.parseDouble(txtSalary.getText()));
-        selected.setContactNumber(txtContact.getText());
-        selected.setAddress(txtAddress.getText());
-        selected.setJoinedDate(String.valueOf(dateJoined.getValue()));
-        selected.setStatus(comboStatus.getValue());
+        if (isUpdated(selected)){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Success!");
+            alert.setHeaderText("Employee Updated!");
+            alert.setContentText("Employee updated successfully in the system");
+            alert.showAndWait();
+        }
         tblEmployee.refresh();
+        loadTable();
         clearText();
     }
 
-    public void clearText(){
+    private boolean isUpdated(EmployeeDTO employee) {
+        EmployeeDTO curEmp = getCurrentEmployee();
+        try {
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("UPDATE EMPLOYEE SET name=?,nic=?,dob=?,position=?,salary=?,contactNumber=?,address=?,joinedDate=?,status=? WHERE employeeId=?");
+            statement.setObject(10, employee.getEmployeeId());
+            statement.setObject(1, curEmp.getName());
+            statement.setObject(2, curEmp.getNic());
+            statement.setObject(3, Date.valueOf(curEmp.getDob()));
+            statement.setObject(4, curEmp.getPosition());
+            statement.setObject(5, curEmp.getSalary());
+            statement.setObject(6, curEmp.getContactNumber());
+            statement.setObject(7, curEmp.getAddress());
+            statement.setObject(8, Date.valueOf(curEmp.getJoinedDate()));
+            statement.setObject(9, curEmp.getStatus());
+            return statement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Employee NOT Updated!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        return false;
+    }
+
+    public void clearText() {
         txtEmpId.setText("");
         txtName.setText("");
         txtNic.setText("");
@@ -227,6 +297,7 @@ public class EmployeeController implements Initializable {
         dateJoined.setValue(null);
         comboStatus.setValue("");
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         colEmpId.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
@@ -239,10 +310,9 @@ public class EmployeeController implements Initializable {
         colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
         colJoined.setCellValueFactory(new PropertyValueFactory<>("joinedDate"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-        tblEmployee.setItems(employeeDTOS);
-
-        tblEmployee.getSelectionModel().selectedItemProperty().addListener((observable,oldValue,newValue)->{
-            if(null!=newValue){
+        loadTable();
+        tblEmployee.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (null != newValue) {
                 txtEmpId.setText(newValue.getEmployeeId());
                 txtName.setText(newValue.getName());
                 txtNic.setText(newValue.getNic());
@@ -255,5 +325,34 @@ public class EmployeeController implements Initializable {
                 comboStatus.setValue(newValue.getStatus());
             }
         });
+    }
+
+    private void loadTable() {
+        employeeDTOS = FXCollections.observableArrayList();
+        try {
+            Statement stm = DBConnection.getInstance().getConnection().createStatement();
+            ResultSet rst = stm.executeQuery("SELECT * FROM EMPLOYEE");
+            while (rst.next()) {
+                employeeDTOS.add(new EmployeeDTO(
+                        rst.getString(1),
+                        rst.getString(2),
+                        rst.getString(3),
+                        rst.getString(4),
+                        rst.getString(5),
+                        rst.getDouble(6),
+                        rst.getString(7),
+                        rst.getString(8),
+                        rst.getString(9),
+                        rst.getString(10)
+                ));
+            }
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Database error!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        tblEmployee.setItems(employeeDTOS);
     }
 }
