@@ -145,11 +145,31 @@ public class ItemController implements Initializable {
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
         ItemDTO selected = tblItems.getSelectionModel().getSelectedItem();
-
+        if (isDeleted(selected.getItemCode())){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText("Item Deleted!");
+            alert.setContentText("Item successfully deleted from the system");
+            alert.showAndWait();
+        }
         tblItems.refresh();
+        loadTable();
         clearText();
     }
 
+    private boolean isDeleted(String id){
+        try {
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("DELETE FROM item WHERE itemCode='"+id+"'");
+            return statement.executeUpdate()>0;
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Item NOT Deleted!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        return false;
+    }
     @FXML
     void btnEmployeesOnAction(ActionEvent event) {
         try {
@@ -197,15 +217,37 @@ public class ItemController implements Initializable {
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
         ItemDTO selected = tblItems.getSelectionModel().getSelectedItem();
-        selected.setItemCode(txtItemCode.getText());
-        selected.setDescription(txtDescription.getText());
-        selected.setCategory(comboCategory.getValue());
-        selected.setQty(Integer.parseInt(txtQty.getText()));
-        selected.setUnitPrice(Double.parseDouble(txtUnitPrice.getText()));
+        if (isUpdated(selected)){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Success!");
+            alert.setHeaderText("Item Updated!");
+            alert.setContentText("Item successfully updated in the system");
+            alert.showAndWait();
+        }
         tblItems.refresh();
+        loadTable();
         clearText();
     }
 
+    private boolean isUpdated(ItemDTO item){
+        ItemDTO currentItem = getCurrentItem();
+        try {
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("UPDATE ITEM SET description=?,category=?,qty=?,unitPrice=? WHERE itemCode=?");
+            statement.setObject(5,item.getItemCode());
+            statement.setObject(1,currentItem.getDescription());
+            statement.setObject(2,currentItem.getCategory());
+            statement.setObject(3,currentItem.getQty());
+            statement.setObject(4,currentItem.getUnitPrice());
+            return statement.executeUpdate()>0;
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Item NOT Updated!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        return false;
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         colItemCode.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
