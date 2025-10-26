@@ -333,7 +333,11 @@ public class CustomerController implements Initializable {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Database error!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
         tblCustomer.setItems(customerDTOS);
     }
