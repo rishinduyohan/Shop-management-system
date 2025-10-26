@@ -86,8 +86,6 @@ public class CustomerController implements Initializable {
     @FXML
     private TextField txtTitle;
 
-    ObservableList<CustomerDTO> customerDTOS = FXCollections.observableArrayList();
-
     private CustomerDTO getCurrentCustomer(){
         String cusId = txtCusId.getText();
         String title = txtTitle.getText();
@@ -313,7 +311,7 @@ public class CustomerController implements Initializable {
     }
 
     private void loadTable() {
-        customerDTOS = FXCollections.observableArrayList();
+        ObservableList<CustomerDTO> customerDTOS = FXCollections.observableArrayList();
         try {
             Statement statement = DBConnection.getInstance().getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT *FROM CUSTOMER");

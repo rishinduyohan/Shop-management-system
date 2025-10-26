@@ -85,8 +85,6 @@ public class EmployeeController implements Initializable {
     @FXML
     private TextField txtSalary;
 
-    ObservableList<EmployeeDTO> employeeDTOS = FXCollections.observableArrayList();
-
     private EmployeeDTO getCurrentEmployee() {
         String employeeId = txtEmpId.getText();
         String name = txtName.getText();
@@ -328,7 +326,7 @@ public class EmployeeController implements Initializable {
     }
 
     private void loadTable() {
-        employeeDTOS = FXCollections.observableArrayList();
+        ObservableList<EmployeeDTO> employeeDTOS = FXCollections.observableArrayList();
         try {
             Statement stm = DBConnection.getInstance().getConnection().createStatement();
             ResultSet rst = stm.executeQuery("SELECT * FROM EMPLOYEE");

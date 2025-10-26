@@ -1,5 +1,6 @@
 package controller;
 
+import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,10 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -19,6 +17,10 @@ import model.ItemDTO;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 
 public class ItemController implements Initializable {
@@ -59,30 +61,48 @@ public class ItemController implements Initializable {
     @FXML
     private TextField txtUnitPrice;
 
-    ObservableList<ItemDTO> itemDTOS = FXCollections.observableArrayList(
-            new ItemDTO("I001", "LED Bulb 12W", "Electronics", 150, 450.00),
-            new ItemDTO("I002", "A4 Paper Pack", "Office Supplies", 80, 1200.00),
-            new ItemDTO("I003", "Steel Hammer", "Hardware Tools", 40, 950.00),
-            new ItemDTO("I004", "Basmathi Rice 5kg", "Groceries", 60, 2500.00),
-            new ItemDTO("I005", "Men’s Cotton Shirt", "Clothing", 30, 3500.00),
-            new ItemDTO("I006", "Extension Cord 5m", "Electronics", 100, 1100.00),
-            new ItemDTO("I007", "Paint Brush Set", "Hardware Tools", 75, 650.00),
-            new ItemDTO("I008", "Printer Ink Cartridge", "Office Supplies", 45, 3200.00)
-    );
 
-    @FXML
-    void btnAddOnAction(ActionEvent event) {
+
+    private ItemDTO getCurrentItem(){
         String code = txtItemCode.getText();
         String desc = txtDescription.getText();
         String category = comboCategory.getValue();
         int qty = Integer.parseInt(txtQty.getText());
         double unitPrice = Double.parseDouble(txtUnitPrice.getText());
-        ItemDTO newItem = new ItemDTO(code,desc,category,qty,unitPrice);
-        itemDTOS.add(newItem);
+        return new ItemDTO(code, desc, category, qty, unitPrice);
+    }
+    @FXML
+    void btnAddOnAction(ActionEvent event) {
+        if (isAdded(getCurrentItem())){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Success!");
+            alert.setHeaderText("Item Added!");
+            alert.setContentText("Item successfully added to the system");
+            alert.showAndWait();
+        }
         tblItems.refresh();
+        loadTable();
         clearText();
     }
 
+    private boolean isAdded(ItemDTO newItem){
+        try {
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("INSERT INTO ITEM VALUES(?,?,?,?,?)");
+            statement.setObject(1,newItem.getItemCode());
+            statement.setObject(2,newItem.getDescription());
+            statement.setObject(3,newItem.getCategory());
+            statement.setObject(4,newItem.getQty());
+            statement.setObject(5,newItem.getUnitPrice());
+            return statement.executeUpdate()>0;
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Item NOT Added!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        return false;
+    }
     @FXML
     void btnClearOnAction(ActionEvent event) {
         clearText();
@@ -100,13 +120,15 @@ public class ItemController implements Initializable {
         stage.setTitle("Customer Management");
         stage.show();
     }
-    public void clearText(){
+
+    public void clearText() {
         txtItemCode.setText("");
         txtDescription.setText("");
         txtQty.setText("");
         txtUnitPrice.setText("");
         comboCategory.setValue("Category");
     }
+
     @FXML
     void btnDashboardOnAction(ActionEvent event) {
         try {
@@ -123,7 +145,7 @@ public class ItemController implements Initializable {
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
         ItemDTO selected = tblItems.getSelectionModel().getSelectedItem();
-        itemDTOS.remove(selected);
+
         tblItems.refresh();
         clearText();
     }
@@ -191,10 +213,9 @@ public class ItemController implements Initializable {
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
         colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
-        tblItems.setItems(itemDTOS);
-
-        tblItems.getSelectionModel().selectedItemProperty().addListener((observable,oldValue,newValue)->{
-            if (null!=newValue){
+        loadTable();
+        tblItems.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (null != newValue) {
                 txtItemCode.setText(newValue.getItemCode());
                 txtDescription.setText(newValue.getDescription());
                 comboCategory.setValue(newValue.getCategory());
@@ -202,6 +223,29 @@ public class ItemController implements Initializable {
                 txtUnitPrice.setText(String.valueOf(newValue.getUnitPrice()));
             }
         });
+    }
 
+    private void loadTable() {
+        ObservableList<ItemDTO> itemDTOS = FXCollections.observableArrayList();
+        try {
+            Statement statement = DBConnection.getInstance().getConnection().createStatement();
+            ResultSet rst = statement.executeQuery("SELECT * FROM item");
+            while (rst.next()) {
+                itemDTOS.add(new ItemDTO(
+                        rst.getString(1),
+                        rst.getString(2),
+                        rst.getString(3),
+                        rst.getInt(4),
+                        rst.getDouble(5)
+                ));
+            }
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Database error!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        tblItems.setItems(itemDTOS);
     }
 }
