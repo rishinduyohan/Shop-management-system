@@ -8,8 +8,8 @@ import java.sql.SQLException;
 
 @Getter
 public class DBConnection {
-    public static DBConnection instance;
-    private final Connection connection;
+    private static DBConnection instance;
+    private Connection connection;
 
     private DBConnection() {
         try {
@@ -18,6 +18,7 @@ public class DBConnection {
             throw new RuntimeException(e);
         }
     }
+
     public static DBConnection getInstance() {
         return null == instance ? new DBConnection() : instance;
     }

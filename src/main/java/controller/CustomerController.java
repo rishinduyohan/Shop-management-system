@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -100,12 +101,41 @@ public class CustomerController implements Initializable {
         String postalCode = txtPostalCode.getText();
 
         CustomerDTO newCustomer = new CustomerDTO(cusId, title, name, dob, Double.parseDouble(salary), address, city, province, postalCode);
-        customerDTOS.add(newCustomer);
+        if (isAdded(newCustomer)){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Conformation");
+            alert.setHeaderText("Customer added!");
+            alert.setContentText("Customer successfully added to the system!");
+            alert.showAndWait();
+        }
         tblCustomer.refresh();
+        loadTable();
         clearText();
 
     }
+    public boolean isAdded(CustomerDTO newCustomer){
+        try {
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("INSERT INTO CUSTOMER VALUES(?,?,?,?,?,?,?,?,?)");
+            statement.setObject(1,newCustomer.getCusID());
+            statement.setObject(2,newCustomer.getTitle());
+            statement.setObject(3,newCustomer.getName());
+            statement.setObject(4,newCustomer.getDob());
+            statement.setObject(5,newCustomer.getSalary());
+            statement.setObject(6,newCustomer.getAddress());
+            statement.setObject(7,newCustomer.getCity());
+            statement.setObject(8,newCustomer.getProvince());
+            statement.setObject(9,newCustomer.getPostalCode());
+            return 0 < statement.executeUpdate();
 
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("Customer NOT added!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        return false;
+    }
     @FXML
     void btnClearOnAction(ActionEvent event) {
         clearText();
@@ -225,7 +255,6 @@ public class CustomerController implements Initializable {
         tblProvince.setCellValueFactory(new PropertyValueFactory<>("province"));
         tblPsCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         loadTable();
-        tblCustomer.setItems(customerDTOS);
         tblCustomer.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (null != newValue) {
                 txtCusId.setText(newValue.getCusID());
@@ -242,6 +271,7 @@ public class CustomerController implements Initializable {
     }
 
     private void loadTable() {
+        customerDTOS = FXCollections.observableArrayList();
         try {
             Statement statement = DBConnection.getInstance().getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT *FROM CUSTOMER");
@@ -263,6 +293,7 @@ public class CustomerController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        tblCustomer.setItems(customerDTOS);
     }
 
     public void clearText() {
