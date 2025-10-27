@@ -1,5 +1,6 @@
 package controller;
 
+import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -18,6 +20,10 @@ import model.SupplierDTO;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 
 public class SupplierController implements Initializable {
@@ -82,17 +88,7 @@ public class SupplierController implements Initializable {
     @FXML
     private TextField txtSupId;
 
-    ObservableList<SupplierDTO> supplierDTOS = FXCollections.observableArrayList(
-            new SupplierDTO("S001", "Ravi Perera", "Perera Traders", "123 Main St", "Colombo", "Western", "00100", "0771234567", "ravi@pereratraders.lk"),
-            new SupplierDTO("S002", "Nimal Silva", "Silva Distributors", "45 Galle Rd", "Galle", "Southern", "80000", "0719876543", "nimal@silvadist.lk"),
-            new SupplierDTO("S003", "Kamal Fernando", "Kamal Supplies", "67 Kandy Rd", "Kandy", "Central", "20000", "0752345678", "kamal@ksupplies.lk"),
-            new SupplierDTO("S004", "Anura Jayasuriya", "Jay Imports", "22 Temple Rd", "Matara", "Southern", "81000", "0783456789", "anura@jayimports.lk"),
-            new SupplierDTO("S005", "Sunil Wijesinghe", "Wijesinghe & Sons", "98 Beach Rd", "Negombo", "Western", "11500", "0764567890", "sunil@wijsons.lk"),
-            new SupplierDTO("S006", "Roshan de Silva", "Roshan Hardware", "12 Hill St", "Nuwara Eliya", "Central", "22000", "0745678901", "roshan@rhardware.lk"),
-            new SupplierDTO("S007", "Priya Abeykoon", "Priya Textiles", "77 Bazaar St", "Kurunegala", "North Western", "60000", "0726789012", "priya@ptextiles.lk"),
-            new SupplierDTO("S008", "Manjula Rathnayake", "MR Electronics", "55 Lake View", "Anuradhapura", "North Central", "50000", "0797890123", "manjula@mrelec.lk")
-    );
-    public void clearText(){
+    public void clearText() {
         txtSupId.setText("");
         txtName.setText("");
         txtComName.setText("");
@@ -103,8 +99,8 @@ public class SupplierController implements Initializable {
         txtPhone.setText("");
         txtEmail.setText("");
     }
-    @FXML
-    void btnAddOnAction(ActionEvent event) {
+
+    private SupplierDTO getCurrentSupplier(){
         String id = txtSupId.getText();
         String name = txtName.getText();
         String comName = txtComName.getText();
@@ -114,12 +110,44 @@ public class SupplierController implements Initializable {
         String psCode = txtPsCode.getText();
         String phone = txtPhone.getText();
         String email = txtEmail.getText();
-        SupplierDTO newSupplier = new SupplierDTO(id,name,comName,address,city,province,psCode,phone,email);
-        supplierDTOS.add(newSupplier);
+        return new SupplierDTO(id, name, comName, address, city, province, psCode, phone, email);
+    }
+    @FXML
+    void btnAddOnAction(ActionEvent event) {
+        if(isAdded(getCurrentSupplier())){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText("Supplier Added!");
+            alert.setContentText("Supplier successfully added to the system");
+            alert.showAndWait();
+        }
         tblSuppliers.refresh();
+        loadTable();
         clearText();
     }
 
+    private boolean isAdded(SupplierDTO supplier){
+        try {
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("INSERT INTO SUPPLIER VALUES(?,?,?,?,?,?,?,?,?)");
+            statement.setObject(1,supplier.getSupplierId());
+            statement.setObject(2,supplier.getName());
+            statement.setObject(3,supplier.getCompanyName());
+            statement.setObject(4,supplier.getAddress());
+            statement.setObject(5,supplier.getCity());
+            statement.setObject(6,supplier.getProvince());
+            statement.setObject(7,supplier.getPostalCode());
+            statement.setObject(8,supplier.getPhone());
+            statement.setObject(9,supplier.getEmail());
+            return statement.executeUpdate()>0;
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Supplier NOT Added!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        return false;
+    }
     @FXML
     void btnClearOnAction(ActionEvent event) {
         clearText();
@@ -154,11 +182,30 @@ public class SupplierController implements Initializable {
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
         SupplierDTO selected = tblSuppliers.getSelectionModel().getSelectedItem();
-        supplierDTOS.remove(selected);
+        if (isDeleted(selected.getSupplierId())){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Success!");
+            alert.setHeaderText("Supplier Deleted!");
+            alert.setContentText("Supplier deleted form the system");
+            alert.showAndWait();
+        }
         tblSuppliers.refresh();
+        loadTable();
         clearText();
     }
-
+    private boolean isDeleted(String id){
+        try {
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("DELETE FROM SUPPLIER WHERE supplierId='"+id+"'");
+            return statement.executeUpdate()>0;
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Supplier NOT Deleted!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        return false;
+    }
     @FXML
     void btnEmployeesOnAction(ActionEvent event) {
         try {
@@ -206,19 +253,40 @@ public class SupplierController implements Initializable {
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
         SupplierDTO selected = tblSuppliers.getSelectionModel().getSelectedItem();
-        selected.setSupplierId(txtSupId.getText());
-        selected.setName(txtName.getText());
-        selected.setCompanyName(txtComName.getText());
-        selected.setAddress(txtAddress.getText());
-        selected.setCity(txtCity.getText());
-        selected.setProvince(txtProvince.getText());
-        selected.setPostalCode(txtPsCode.getText());
-        selected.setPhone(txtPhone.getText());
-        selected.setEmail(txtEmail.getText());
+        if (isUpdated(selected)){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Success!");
+            alert.setHeaderText("Supplier Updated!");
+            alert.setContentText("Supplier successfully updated in the system");
+            alert.showAndWait();
+        }
         tblSuppliers.refresh();
+        loadTable();
         clearText();
     }
-
+    private boolean isUpdated(SupplierDTO selected){
+        SupplierDTO supplier = getCurrentSupplier();
+        try {
+            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("UPDATE SUPPLIER SET name=?,companyName=?,address=?,city=?,province=?,postalCode=?,phone=?,email=? WHERE supplierId=?");
+            statement.setObject(9,selected.getSupplierId());
+            statement.setObject(1,supplier.getName());
+            statement.setObject(2,supplier.getCompanyName());
+            statement.setObject(3,supplier.getAddress());
+            statement.setObject(4,supplier.getCity());
+            statement.setObject(5,supplier.getProvince());
+            statement.setObject(6,supplier.getPostalCode());
+            statement.setObject(7,supplier.getPhone());
+            statement.setObject(8,supplier.getEmail());
+            return statement.executeUpdate()>0;
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Supplier NOT Updated!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        return false;
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         colSupId.setCellValueFactory(new PropertyValueFactory<>("supplierId"));
@@ -230,10 +298,9 @@ public class SupplierController implements Initializable {
         colPsCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        tblSuppliers.setItems(supplierDTOS);
-
-        tblSuppliers.getSelectionModel().selectedItemProperty().addListener((obeservable,oldValue,newValue)->{
-            if (null != newValue){
+        loadTable();
+        tblSuppliers.getSelectionModel().selectedItemProperty().addListener((obeservable, oldValue, newValue) -> {
+            if (null != newValue) {
                 txtSupId.setText(newValue.getSupplierId());
                 txtName.setText(newValue.getName());
                 txtComName.setText(newValue.getCompanyName());
@@ -245,5 +312,33 @@ public class SupplierController implements Initializable {
                 txtEmail.setText(newValue.getEmail());
             }
         });
+    }
+
+    private void loadTable() {
+        ObservableList<SupplierDTO> supplierDTOS = FXCollections.observableArrayList();
+        try {
+            Statement statement = DBConnection.getInstance().getConnection().createStatement();
+            ResultSet rst = statement.executeQuery("SELECT * FROM SUPPLIER");
+            while (rst.next()) {
+                supplierDTOS.add(new SupplierDTO(
+                        rst.getString(1),
+                        rst.getString(2),
+                        rst.getString(3),
+                        rst.getString(4),
+                        rst.getString(5),
+                        rst.getString(6),
+                        rst.getString(7),
+                        rst.getString(8),
+                        rst.getString(9)
+                ));
+            }
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Database error!");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+        tblSuppliers.setItems(supplierDTOS);
     }
 }
