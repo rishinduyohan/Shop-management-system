@@ -41,7 +41,7 @@
 
             <VBox alignment="CENTER_LEFT" prefWidth="260" spacing="8">
                 <Label style="-fx-text-fill: #2e7d32; -fx-font-size: 13px;" text="Username" />
-                <TextField fx:id="txtUsername" promptText="Enter username" style="-fx-background-radius: 8; -fx-border-color: #a5d6a7; -fx-border-radius: 8; -fx-padding: 8;" />
+                <TextField fx:id="txtUsername" onAction="#txtUsernameOnAction" promptText="Enter username" style="-fx-background-radius: 8; -fx-border-color: #a5d6a7; -fx-border-radius: 8; -fx-padding: 8;" />
             </VBox>
 
             <VBox alignment="CENTER_LEFT" prefWidth="260" spacing="8">
