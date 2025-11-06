@@ -1,4 +1,4 @@
-package controller;
+package controller.mainController;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,9 +12,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.LoginInfoDTO;
-
-import java.io.IOException;
+import model.dto.LoginInfoDTO;
 
 public class LoginFormController {
     Stage stage = new Stage();

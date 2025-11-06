@@ -1,4 +1,4 @@
-package controller;
+package controller.mainController;
 
 import db.DBConnection;
 import javafx.collections.FXCollections;
@@ -13,7 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import model.ItemDTO;
+import model.dto.ItemDTO;
 
 import java.io.IOException;
 import java.net.URL;

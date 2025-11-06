@@ -1,4 +1,4 @@
-package controller;
+package controller.mainController;
 
 import db.DBConnection;
 import javafx.collections.FXCollections;
@@ -12,7 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import model.EmployeeDTO;
+import model.dto.EmployeeDTO;
 
 import java.io.IOException;
 import java.net.URL;

@@ -1,8 +1,8 @@
-package controller;
+package controller.mainController;
 
+import controller.dbConnector.CustomerDb;
 import db.DBConnection;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +17,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import model.CustomerDTO;
+import model.dto.CustomerDTO;
+import controller.service.CustomerService;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,6 +27,7 @@ import java.util.ResourceBundle;
 
 public class CustomerController implements Initializable {
     Stage stage = new Stage();
+    CustomerService customerService = new CustomerDb();
     @FXML
     private AnchorPane mainContent;
 
@@ -100,40 +102,24 @@ public class CustomerController implements Initializable {
     }
     @FXML
     void btnAddOnAction(ActionEvent event) {
-        if (isAdded(getCurrentCustomer())){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Conformation");
-            alert.setHeaderText("Customer added!");
-            alert.setContentText("Customer successfully added to the system!");
-            alert.showAndWait();
-        }
-        tblCustomer.refresh();
-        loadTable();
-        clearText();
-
-    }
-    public boolean isAdded(CustomerDTO newCustomer){
         try {
-            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("INSERT INTO CUSTOMER VALUES(?,?,?,?,?,?,?,?,?)");
-            statement.setObject(1,newCustomer.getCusID());
-            statement.setObject(2,newCustomer.getTitle());
-            statement.setObject(3,newCustomer.getName());
-            statement.setObject(4,newCustomer.getDob());
-            statement.setObject(5,newCustomer.getSalary());
-            statement.setObject(6,newCustomer.getAddress());
-            statement.setObject(7,newCustomer.getCity());
-            statement.setObject(8,newCustomer.getProvince());
-            statement.setObject(9,newCustomer.getPostalCode());
-            return 0 < statement.executeUpdate();
-
-        } catch (Exception e) {
+            if (customerService.addCustomer(getCurrentCustomer())){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Conformation");
+                alert.setHeaderText("Customer added!");
+                alert.setContentText("Customer successfully added to the system!");
+                alert.showAndWait();
+            }
+        } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Customer NOT added!");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        loadTable();
+        clearText();
+
     }
     @FXML
     void btnClearOnAction(ActionEvent event) {
@@ -169,30 +155,23 @@ public class CustomerController implements Initializable {
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
         CustomerDTO selectedCustomer = tblCustomer.getSelectionModel().getSelectedItem();
-        if (isDeleted(selectedCustomer.getCusID())){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Success!");
-            alert.setHeaderText("Customer Deleted!");
-            alert.setContentText("Customer deleted successfully in the system.");
-            alert.showAndWait();
-        }
-        tblCustomer.refresh();
-        loadTable();
-        clearText();
-    }
-    public boolean isDeleted(String id){
         try {
-            Statement stm = DBConnection.getInstance().getConnection().createStatement();
-            int res = stm.executeUpdate("DELETE FROM CUSTOMER WHERE cusID = '"+id+"' ");
-            return res>0;
-        } catch (Exception e) {
+            if (customerService.deleteCustomer(selectedCustomer.getCusID())){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Success!");
+                alert.setHeaderText("Customer Deleted!");
+                alert.setContentText("Customer deleted successfully in the system.");
+                alert.showAndWait();
+            }
+        } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Customer NOT deleted!");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        loadTable();
+        clearText();
     }
     @FXML
     void btnEmployeesOnAction(ActionEvent event) {
@@ -249,31 +228,14 @@ public class CustomerController implements Initializable {
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
         CustomerDTO selectedCustomer = tblCustomer.getSelectionModel().getSelectedItem();
-        if (isUpdated(selectedCustomer)){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Success!");
-            alert.setHeaderText("Customer Updated!");
-            alert.setContentText("Customer details updated successfully!");
-            alert.showAndWait();
-        }
-        tblCustomer.refresh();
-        loadTable();
-        clearText();
-    }
-    public boolean isUpdated(CustomerDTO customer){
-        CustomerDTO updatedCustomer = getCurrentCustomer();
         try {
-            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("UPDATE CUSTOMER SET title=?, name=?,dob=?,salary=?,address=?,city=?,province=?,postalCode=? WHERE cusID=?");
-            statement.setObject(9,customer.getCusID());
-            statement.setObject(1,updatedCustomer.getTitle());
-            statement.setObject(2,updatedCustomer.getName());
-            statement.setObject(3,updatedCustomer.getDob());
-            statement.setObject(4,updatedCustomer.getSalary());
-            statement.setObject(5,updatedCustomer.getAddress());
-            statement.setObject(6,updatedCustomer.getCity());
-            statement.setObject(7,updatedCustomer.getProvince());
-            statement.setObject(8,updatedCustomer.getPostalCode());
-            return statement.executeUpdate()>0;
+            if (customerService.updateCustomer(selectedCustomer.getCusID(),getCurrentCustomer())){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Success!");
+                alert.setHeaderText("Customer Updated!");
+                alert.setContentText("Customer details updated successfully!");
+                alert.showAndWait();
+            }
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -281,7 +243,8 @@ public class CustomerController implements Initializable {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        loadTable();
+        clearText();
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -313,8 +276,7 @@ public class CustomerController implements Initializable {
     private void loadTable() {
         ObservableList<CustomerDTO> customerDTOS = FXCollections.observableArrayList();
         try {
-            Statement statement = DBConnection.getInstance().getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT *FROM CUSTOMER");
+            ResultSet resultSet=customerService.getAllCustomers();
             while (resultSet.next()) {
                 customerDTOS.add(new CustomerDTO(
                         resultSet.getString(1),
@@ -326,10 +288,8 @@ public class CustomerController implements Initializable {
                         resultSet.getString(7),
                         resultSet.getString(8),
                         resultSet.getString(9)
-
-                        ));
+                ));
             }
-
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
