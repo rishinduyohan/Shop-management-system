@@ -1,5 +1,7 @@
 package controller.mainController;
 
+import controller.dbConnector.EmployeeDb;
+import controller.service.EmployeeService;
 import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +24,7 @@ import java.util.ResourceBundle;
 
 public class EmployeeController implements Initializable {
     Stage stage = new Stage();
+    EmployeeService employeeService = new EmployeeDb();
     @FXML
     private TableColumn<?, ?> colAddress;
 
@@ -102,32 +105,14 @@ public class EmployeeController implements Initializable {
 
     @FXML
     void btnAddOnAction(ActionEvent event) {
-        if (isAdded(getCurrentEmployee())) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Successs!");
-            alert.setHeaderText("Employee Added!");
-            alert.setContentText("Employee Successfully added to the system!");
-            alert.showAndWait();
-        }
-        tblEmployee.refresh();
-        loadTable();
-        clearText();
-    }
-
-    private boolean isAdded(EmployeeDTO emp) {
         try {
-            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("INSERT INTO EMPLOYEE VALUES(?,?,?,?,?,?,?,?,?,?)");
-            statement.setObject(1, emp.getEmployeeId());
-            statement.setObject(2, emp.getName());
-            statement.setObject(3, emp.getNic());
-            statement.setObject(4, Date.valueOf(emp.getDob()));
-            statement.setObject(5, emp.getPosition());
-            statement.setObject(6, emp.getSalary());
-            statement.setObject(7, emp.getContactNumber());
-            statement.setObject(8, emp.getAddress());
-            statement.setObject(9, Date.valueOf(emp.getJoinedDate()));
-            statement.setObject(10, emp.getStatus());
-            return statement.executeUpdate() > 0;
+            if (employeeService.addEmployee(getCurrentEmployee())) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Successs!");
+                alert.setHeaderText("Employee Added!");
+                alert.setContentText("Employee Successfully added to the system!");
+                alert.showAndWait();
+            }
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -135,9 +120,10 @@ public class EmployeeController implements Initializable {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        tblEmployee.refresh();
+        loadTable();
+        clearText();
     }
-
     @FXML
     void btnClearOnAction(ActionEvent event) {
         clearText();
@@ -172,22 +158,14 @@ public class EmployeeController implements Initializable {
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
         EmployeeDTO selected = tblEmployee.getSelectionModel().getSelectedItem();
-        if (isDeleted(selected.getEmployeeId())) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Success!");
-            alert.setHeaderText("Employee Deleted!");
-            alert.setContentText("Employee successfully deleted from the system");
-            alert.showAndWait();
-        }
-        tblEmployee.refresh();
-        loadTable();
-        clearText();
-    }
-
-    private boolean isDeleted(String id) {
         try {
-            PreparedStatement stm = DBConnection.getInstance().getConnection().prepareStatement("DELETE FROM EMPLOYEE WHERE employeeId='" + id + "'");
-            return stm.executeUpdate() > 0;
+            if (employeeService.deleteEmployee(selected.getEmployeeId())) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Success!");
+                alert.setHeaderText("Employee Deleted!");
+                alert.setContentText("Employee successfully deleted from the system");
+                alert.showAndWait();
+            }
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -195,13 +173,11 @@ public class EmployeeController implements Initializable {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        loadTable();
+        clearText();
     }
-
     @FXML
-    void btnEmployeesOnAction(ActionEvent event) {
-
-    }
+    void btnEmployeesOnAction(ActionEvent event) {}
 
     @FXML
     void btnItemsOnAction(ActionEvent event) {
@@ -245,34 +221,14 @@ public class EmployeeController implements Initializable {
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
         EmployeeDTO selected = tblEmployee.getSelectionModel().getSelectedItem();
-        if (isUpdated(selected)){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Success!");
-            alert.setHeaderText("Employee Updated!");
-            alert.setContentText("Employee updated successfully in the system");
-            alert.showAndWait();
-        }
-        tblEmployee.refresh();
-        loadTable();
-        clearText();
-    }
-
-    private boolean isUpdated(EmployeeDTO employee) {
-        EmployeeDTO curEmp = getCurrentEmployee();
         try {
-            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("UPDATE EMPLOYEE SET name=?,nic=?,dob=?,position=?,salary=?,contactNumber=?,address=?,joinedDate=?,status=? WHERE employeeId=?");
-            statement.setObject(10, employee.getEmployeeId());
-            statement.setObject(1, curEmp.getName());
-            statement.setObject(2, curEmp.getNic());
-            statement.setObject(3, Date.valueOf(curEmp.getDob()));
-            statement.setObject(4, curEmp.getPosition());
-            statement.setObject(5, curEmp.getSalary());
-            statement.setObject(6, curEmp.getContactNumber());
-            statement.setObject(7, curEmp.getAddress());
-            statement.setObject(8, Date.valueOf(curEmp.getJoinedDate()));
-            statement.setObject(9, curEmp.getStatus());
-            return statement.executeUpdate() > 0;
-
+            if (employeeService.updateCustomer(selected.getEmployeeId(),getCurrentEmployee())){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Success!");
+                alert.setHeaderText("Employee Updated!");
+                alert.setContentText("Employee updated successfully in the system");
+                alert.showAndWait();
+            }
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -280,9 +236,9 @@ public class EmployeeController implements Initializable {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        loadTable();
+        clearText();
     }
-
     public void clearText() {
         txtEmpId.setText("");
         txtName.setText("");
@@ -328,8 +284,7 @@ public class EmployeeController implements Initializable {
     private void loadTable() {
         ObservableList<EmployeeDTO> employeeDTOS = FXCollections.observableArrayList();
         try {
-            Statement stm = DBConnection.getInstance().getConnection().createStatement();
-            ResultSet rst = stm.executeQuery("SELECT * FROM EMPLOYEE");
+            ResultSet rst = employeeService.getAllEmployees();
             while (rst.next()) {
                 employeeDTOS.add(new EmployeeDTO(
                         rst.getString(1),
