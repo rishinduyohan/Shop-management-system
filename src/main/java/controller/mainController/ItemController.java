@@ -1,5 +1,7 @@
 package controller.mainController;
 
+import controller.dbConnector.ItemDb;
+import controller.service.ItemService;
 import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,6 +27,7 @@ import java.util.ResourceBundle;
 
 public class ItemController implements Initializable {
     Stage stage = new Stage();
+    ItemService itemService = new ItemDb();
     @FXML
     private TableColumn<?, ?> colCategory;
 
@@ -73,35 +76,23 @@ public class ItemController implements Initializable {
     }
     @FXML
     void btnAddOnAction(ActionEvent event) {
-        if (isAdded(getCurrentItem())){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Success!");
-            alert.setHeaderText("Item Added!");
-            alert.setContentText("Item successfully added to the system");
-            alert.showAndWait();
-        }
-        tblItems.refresh();
-        loadTable();
-        clearText();
-    }
-
-    private boolean isAdded(ItemDTO newItem){
         try {
-            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("INSERT INTO ITEM VALUES(?,?,?,?,?)");
-            statement.setObject(1,newItem.getItemCode());
-            statement.setObject(2,newItem.getDescription());
-            statement.setObject(3,newItem.getCategory());
-            statement.setObject(4,newItem.getQty());
-            statement.setObject(5,newItem.getUnitPrice());
-            return statement.executeUpdate()>0;
-        } catch (Exception e) {
+            if (itemService.addItem(getCurrentItem())){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Success!");
+                alert.setHeaderText("Item Added!");
+                alert.setContentText("Item successfully added to the system");
+                alert.showAndWait();
+            }
+        } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Item NOT Added!");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        loadTable();
+        clearText();
     }
     @FXML
     void btnClearOnAction(ActionEvent event) {
@@ -145,22 +136,14 @@ public class ItemController implements Initializable {
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
         ItemDTO selected = tblItems.getSelectionModel().getSelectedItem();
-        if (isDeleted(selected.getItemCode())){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText("Item Deleted!");
-            alert.setContentText("Item successfully deleted from the system");
-            alert.showAndWait();
-        }
-        tblItems.refresh();
-        loadTable();
-        clearText();
-    }
-
-    private boolean isDeleted(String id){
         try {
-            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("DELETE FROM item WHERE itemCode='"+id+"'");
-            return statement.executeUpdate()>0;
+            if (itemService.deleteItem(selected.getItemCode())){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText("Item Deleted!");
+                alert.setContentText("Item successfully deleted from the system");
+                alert.showAndWait();
+            }
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -168,7 +151,8 @@ public class ItemController implements Initializable {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        loadTable();
+        clearText();
     }
     @FXML
     void btnEmployeesOnAction(ActionEvent event) {
@@ -217,36 +201,23 @@ public class ItemController implements Initializable {
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
         ItemDTO selected = tblItems.getSelectionModel().getSelectedItem();
-        if (isUpdated(selected)){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Success!");
-            alert.setHeaderText("Item Updated!");
-            alert.setContentText("Item successfully updated in the system");
-            alert.showAndWait();
-        }
-        tblItems.refresh();
-        loadTable();
-        clearText();
-    }
-
-    private boolean isUpdated(ItemDTO item){
-        ItemDTO currentItem = getCurrentItem();
         try {
-            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("UPDATE ITEM SET description=?,category=?,qty=?,unitPrice=? WHERE itemCode=?");
-            statement.setObject(5,item.getItemCode());
-            statement.setObject(1,currentItem.getDescription());
-            statement.setObject(2,currentItem.getCategory());
-            statement.setObject(3,currentItem.getQty());
-            statement.setObject(4,currentItem.getUnitPrice());
-            return statement.executeUpdate()>0;
-        } catch (Exception e) {
+            if (itemService.updateItem(selected.getItemCode(),getCurrentItem())){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Success!");
+                alert.setHeaderText("Item Updated!");
+                alert.setContentText("Item successfully updated in the system");
+                alert.showAndWait();
+            }
+        } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Item NOT Updated!");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        loadTable();
+        clearText();
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -270,8 +241,7 @@ public class ItemController implements Initializable {
     private void loadTable() {
         ObservableList<ItemDTO> itemDTOS = FXCollections.observableArrayList();
         try {
-            Statement statement = DBConnection.getInstance().getConnection().createStatement();
-            ResultSet rst = statement.executeQuery("SELECT * FROM item");
+            ResultSet rst = itemService.getAllItems();
             while (rst.next()) {
                 itemDTOS.add(new ItemDTO(
                         rst.getString(1),
