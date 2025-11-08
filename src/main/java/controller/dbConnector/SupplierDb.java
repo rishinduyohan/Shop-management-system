@@ -31,8 +31,17 @@ public class SupplierDb implements SupplierService {
     }
 
     @Override
-    public boolean updateSupplier(String id, SupplierDTO newSupplier) {
-        return false;
+    public boolean updateSupplier(String id, SupplierDTO supplier) throws SQLException {
+        PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("UPDATE SUPPLIER SET name=?,companyName=?,address=?,city=?,province=?,postalCode=?,phone=?,email=? WHERE supplierId='"+id+"'");
+        statement.setObject(1,supplier.getName());
+        statement.setObject(2,supplier.getCompanyName());
+        statement.setObject(3,supplier.getAddress());
+        statement.setObject(4,supplier.getCity());
+        statement.setObject(5,supplier.getProvince());
+        statement.setObject(6,supplier.getPostalCode());
+        statement.setObject(7,supplier.getPhone());
+        statement.setObject(8,supplier.getEmail());
+        return statement.executeUpdate()>0;
     }
 
     @Override

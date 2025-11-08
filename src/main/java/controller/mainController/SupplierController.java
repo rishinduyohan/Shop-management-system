@@ -235,31 +235,14 @@ public class SupplierController implements Initializable {
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
         SupplierDTO selected = tblSuppliers.getSelectionModel().getSelectedItem();
-        if (isUpdated(selected)){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Success!");
-            alert.setHeaderText("Supplier Updated!");
-            alert.setContentText("Supplier successfully updated in the system");
-            alert.showAndWait();
-        }
-        tblSuppliers.refresh();
-        loadTable();
-        clearText();
-    }
-    private boolean isUpdated(SupplierDTO selected){
-        SupplierDTO supplier = getCurrentSupplier();
         try {
-            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("UPDATE SUPPLIER SET name=?,companyName=?,address=?,city=?,province=?,postalCode=?,phone=?,email=? WHERE supplierId=?");
-            statement.setObject(9,selected.getSupplierId());
-            statement.setObject(1,supplier.getName());
-            statement.setObject(2,supplier.getCompanyName());
-            statement.setObject(3,supplier.getAddress());
-            statement.setObject(4,supplier.getCity());
-            statement.setObject(5,supplier.getProvince());
-            statement.setObject(6,supplier.getPostalCode());
-            statement.setObject(7,supplier.getPhone());
-            statement.setObject(8,supplier.getEmail());
-            return statement.executeUpdate()>0;
+            if (supplierService.updateSupplier(selected.getSupplierId(),getCurrentSupplier())){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Success!");
+                alert.setHeaderText("Supplier Updated!");
+                alert.setContentText("Supplier successfully updated in the system");
+                alert.showAndWait();
+            }
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -267,7 +250,9 @@ public class SupplierController implements Initializable {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        tblSuppliers.refresh();
+        loadTable();
+        clearText();
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

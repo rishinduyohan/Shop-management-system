@@ -8,6 +8,6 @@ import java.sql.SQLException;
 public interface SupplierService {
     boolean addSupplier(SupplierDTO newSupplier) throws SQLException;
     boolean deleteSupplier(String id) throws SQLException;
-    boolean updateSupplier(String id,SupplierDTO newSupplier);
+    boolean updateSupplier(String id,SupplierDTO newSupplier) throws SQLException;
     ResultSet getAllSupplier();
 }
