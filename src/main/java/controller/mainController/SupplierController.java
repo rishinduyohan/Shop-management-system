@@ -1,5 +1,7 @@
 package controller.mainController;
 
+import controller.dbConnector.SupplierDb;
+import controller.service.SupplierService;
 import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,6 +30,7 @@ import java.util.ResourceBundle;
 
 public class SupplierController implements Initializable {
     Stage stage = new Stage();
+    SupplierService supplierService = new SupplierDb();
     @FXML
     private TableColumn<?, ?> colAddress;
 
@@ -114,31 +117,14 @@ public class SupplierController implements Initializable {
     }
     @FXML
     void btnAddOnAction(ActionEvent event) {
-        if(isAdded(getCurrentSupplier())){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText("Supplier Added!");
-            alert.setContentText("Supplier successfully added to the system");
-            alert.showAndWait();
-        }
-        tblSuppliers.refresh();
-        loadTable();
-        clearText();
-    }
-
-    private boolean isAdded(SupplierDTO supplier){
         try {
-            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("INSERT INTO SUPPLIER VALUES(?,?,?,?,?,?,?,?,?)");
-            statement.setObject(1,supplier.getSupplierId());
-            statement.setObject(2,supplier.getName());
-            statement.setObject(3,supplier.getCompanyName());
-            statement.setObject(4,supplier.getAddress());
-            statement.setObject(5,supplier.getCity());
-            statement.setObject(6,supplier.getProvince());
-            statement.setObject(7,supplier.getPostalCode());
-            statement.setObject(8,supplier.getPhone());
-            statement.setObject(9,supplier.getEmail());
-            return statement.executeUpdate()>0;
+            if(supplierService.addSupplier(getCurrentSupplier())){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText("Supplier Added!");
+                alert.setContentText("Supplier successfully added to the system");
+                alert.showAndWait();
+            }
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -146,7 +132,8 @@ public class SupplierController implements Initializable {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        loadTable();
+        clearText();
     }
     @FXML
     void btnClearOnAction(ActionEvent event) {
