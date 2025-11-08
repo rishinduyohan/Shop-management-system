@@ -169,21 +169,14 @@ public class SupplierController implements Initializable {
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
         SupplierDTO selected = tblSuppliers.getSelectionModel().getSelectedItem();
-        if (isDeleted(selected.getSupplierId())){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Success!");
-            alert.setHeaderText("Supplier Deleted!");
-            alert.setContentText("Supplier deleted form the system");
-            alert.showAndWait();
-        }
-        tblSuppliers.refresh();
-        loadTable();
-        clearText();
-    }
-    private boolean isDeleted(String id){
         try {
-            PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("DELETE FROM SUPPLIER WHERE supplierId='"+id+"'");
-            return statement.executeUpdate()>0;
+            if (supplierService.deleteSupplier(selected.getSupplierId())){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Success!");
+                alert.setHeaderText("Supplier Deleted!");
+                alert.setContentText("Supplier deleted form the system");
+                alert.showAndWait();
+            }
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -191,7 +184,9 @@ public class SupplierController implements Initializable {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-        return false;
+        tblSuppliers.refresh();
+        loadTable();
+        clearText();
     }
     @FXML
     void btnEmployeesOnAction(ActionEvent event) {

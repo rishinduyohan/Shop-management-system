@@ -25,8 +25,9 @@ public class SupplierDb implements SupplierService {
     }
 
     @Override
-    public boolean deleteSupplier(String id) {
-        return false;
+    public boolean deleteSupplier(String id) throws SQLException {
+        PreparedStatement statement = DBConnection.getInstance().getConnection().prepareStatement("DELETE FROM SUPPLIER WHERE supplierId='"+id+"'");
+        return statement.executeUpdate()>0;
     }
 
     @Override

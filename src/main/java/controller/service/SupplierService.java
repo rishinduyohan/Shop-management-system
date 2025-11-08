@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public interface SupplierService {
     boolean addSupplier(SupplierDTO newSupplier) throws SQLException;
-    boolean deleteSupplier(String id);
+    boolean deleteSupplier(String id) throws SQLException;
     boolean updateSupplier(String id,SupplierDTO newSupplier);
     ResultSet getAllSupplier();
 }
