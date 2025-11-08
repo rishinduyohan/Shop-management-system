@@ -1,7 +1,6 @@
 package controller.mainController;
 
 import controller.dbConnector.CustomerDb;
-import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
