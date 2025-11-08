@@ -284,8 +284,7 @@ public class SupplierController implements Initializable {
     private void loadTable() {
         ObservableList<SupplierDTO> supplierDTOS = FXCollections.observableArrayList();
         try {
-            Statement statement = DBConnection.getInstance().getConnection().createStatement();
-            ResultSet rst = statement.executeQuery("SELECT * FROM SUPPLIER");
+            ResultSet rst = supplierService.getAllSupplier();
             while (rst.next()) {
                 supplierDTOS.add(new SupplierDTO(
                         rst.getString(1),

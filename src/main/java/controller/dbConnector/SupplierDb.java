@@ -7,6 +7,7 @@ import model.dto.SupplierDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SupplierDb implements SupplierService {
     @Override
@@ -45,7 +46,8 @@ public class SupplierDb implements SupplierService {
     }
 
     @Override
-    public ResultSet getAllSupplier() {
-        return null;
+    public ResultSet getAllSupplier() throws SQLException {
+        Statement statement = DBConnection.getInstance().getConnection().createStatement();
+        return statement.executeQuery("SELECT * FROM SUPPLIER");
     }
 }
