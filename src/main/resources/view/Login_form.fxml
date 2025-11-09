@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: linear-gradient(to bottom right, #f1f8e9, #ffffff);" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginFormController">
+<AnchorPane prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: linear-gradient(to bottom right, #f1f8e9, #ffffff);" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.mainController.LoginFormController">
 
     <children>
 
@@ -41,7 +41,7 @@
 
             <VBox alignment="CENTER_LEFT" prefWidth="260" spacing="8">
                 <Label style="-fx-text-fill: #2e7d32; -fx-font-size: 13px;" text="Username" />
-                <TextField fx:id="txtUsername" promptText="Enter username" style="-fx-background-radius: 8; -fx-border-color: #a5d6a7; -fx-border-radius: 8; -fx-padding: 8;" />
+                <TextField fx:id="txtUsername" onAction="#txtUsernameOnAction" promptText="Enter username" style="-fx-background-radius: 8; -fx-border-color: #a5d6a7; -fx-border-radius: 8; -fx-padding: 8;" />
             </VBox>
 
             <VBox alignment="CENTER_LEFT" prefWidth="260" spacing="8">

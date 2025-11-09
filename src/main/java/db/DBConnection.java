@@ -11,15 +11,14 @@ public class DBConnection {
     private static DBConnection instance;
     private Connection connection;
 
-    private DBConnection() {
+    private DBConnection(){
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost/thogakadefx", "root", "1234");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/thogakadefx","root","1234");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
-    public static DBConnection getInstance() {
-        return null == instance ? new DBConnection() : instance;
+    public static DBConnection getInstance(){
+        return null==instance?new DBConnection():instance;
     }
 }
